@@ -1,6 +1,15 @@
 {
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "Docker .NET Attach (Preview)",
+        "type": "docker",
+        "request": "attach",
+        "platform": "netCore",
+        "sourceFileMap": {
+            "/app": "${workspaceFolder}"
+        }
+    },
         {
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
