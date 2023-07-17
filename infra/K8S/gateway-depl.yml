@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-svc
+spec:
+  selector:
+    matchLabels:
+      app: gateway-svc
+  template:
+    metadata:
+      labels:
+        app: gateway-svc
+    spec:
+      containers:
+      - name: gateway-svc
+        image: trycatchlearn/gateway-svc
+        imagePullPolicy: Never
+        env:
+          - name: ClientApp
+            value: https://app.carsties.com
+          - name: IdentityServiceUrl
+            value: https://id.trycatchlearn.com
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: gateway-svc
+  ports:
+  - port: 80
+    targetPort: 80
+

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        env:
+          - name: RABBITMQ_DEFAULT_USER
+            value: rabbit
+          - name: RABBITMQ_DEFAULT_PASS
+            value: rabbit
+        ports:
+        - containerPort: 15672
+          name: rbmq-mgmt-port
+        - containerPort: 5672
+          name: rbmq-msg-port
+        volumeMounts: 
+        - mountPath: /var/data/rabbit
+          name: rabbitdata
+      volumes:
+        - name: rabbitdata
+          persistentVolumeClaim:
+            claimName: rabbit-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbit-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: rabbitmq
+  ports:
+  - port: 5672
+    targetPort: 5672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbit-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: rabbitmq
+  ports:
+  - port: 15672
+    targetPort: 15672

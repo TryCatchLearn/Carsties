@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bid-svc
+spec:
+  selector:
+    matchLabels:
+      app: bid-svc
+  template:
+    metadata:
+      labels:
+        app: bid-svc
+    spec:
+      containers:
+      - name: bid-svc
+        image: trycatchlearn/bid-svc
+        imagePullPolicy: Never
+        env:
+          - name: RabbitMq__Host
+            value: rabbit-clusterip
+          - name: RabbitMq__Username
+            value: rabbit
+          - name: RabbitMq__Password
+            value: rabbit
+          - name: ConnectionStrings__BidDbConnection
+            value: mongodb://root:mongopw@mongo-clusterip
+          - name: IdentityServiceUrl
+            value: https://id.trycatchlearn.com
+          - name: GrpcAuction
+            value: http://auction-clusterip:7777
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bid-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: bid-svc
+  ports:
+  - port: 80
+    targetPort: 80

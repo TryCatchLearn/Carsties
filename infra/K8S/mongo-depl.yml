@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+spec:
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: root
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: mongopw
+        ports:
+        - containerPort: 27017
+        volumeMounts: 
+        - mountPath: /var/data/mongo
+          name: mongodata
+      volumes:
+        - name: mongodata
+          persistentVolumeClaim:
+            claimName: mongo-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017

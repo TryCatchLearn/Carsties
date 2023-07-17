@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auction-svc
+spec:
+  selector:
+    matchLabels:
+      app: auction-svc
+  template:
+    metadata:
+      labels:
+        app: auction-svc
+    spec:
+      containers:
+      - name: auction-svc
+        image: trycatchlearn/auction-svc
+        imagePullPolicy: Never
+        env:
+          - name: RabbitMq__Host
+            value: rabbit-clusterip
+          - name: RabbitMq__Username
+            value: rabbit
+          - name: RabbitMq__Password
+            value: rabbit
+          - name: ConnectionStrings__DefaultConnection
+            value: Server=postgres-clusterip:5432;User Id=postgres;Password=postgrespw;Database=auctions
+          - name: IdentityServiceUrl
+            value: https://id.trycatchlearn.com
+          - name: Kestrel__Endpoints__Grpc__Protocols
+            value: Http2
+          - name: Kestrel__Endpoints__Grpc__Url
+            value: http://+:7777
+          - name: Kestrel__Endpoints__WebApi__Protocols
+            value: Http1
+          - name: Kestrel__Endpoints__WebApi__Url
+            value: http://+:80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auction-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: auction-svc
+  ports:
+  - port: 80
+    targetPort: 80
+    name: web
+  - port: 7777
+    targetPort: 7777
+    name: grpc
