@@ -14,10 +14,10 @@ spec:
       containers:
       - name: gateway-svc
         image: trycatchlearn/gateway-svc
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         env:
           - name: ClientApp
-            value: https://app.carsties.com
+            value: https://app.carsties.store
           - name: IdentityServiceUrl
             value: https://id.trycatchlearn.com
 ---

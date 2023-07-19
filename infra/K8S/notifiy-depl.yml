@@ -14,14 +14,20 @@ spec:
       containers:
       - name: notify-svc
         image: trycatchlearn/notify-svc
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         env:
           - name: RabbitMq__Host
             value: rabbit-clusterip
           - name: RabbitMq__Username
-            value: rabbit
+            valueFrom:
+              secretKeyRef:
+                name: notify-secret
+                key: rabbitUn
           - name: RabbitMq__Password
-            value: rabbit
+            valueFrom:
+              secretKeyRef:
+                name: notify-secret
+                key: rabbitPw
 ---
 apiVersion: v1
 kind: Service

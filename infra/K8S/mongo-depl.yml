@@ -16,9 +16,15 @@ spec:
         image: mongo
         env:
           - name: MONGO_INITDB_ROOT_USERNAME
-            value: root
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: username
           - name: MONGO_INITDB_ROOT_PASSWORD
-            value: mongopw
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: password
         ports:
         - containerPort: 27017
         volumeMounts: 
@@ -35,18 +41,6 @@ metadata:
   name: mongo-clusterip
 spec:
   type: ClusterIP
-  selector:
-    app: mongo
-  ports:
-  - port: 27017
-    targetPort: 27017
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongo-lb
-spec:
-  type: LoadBalancer
   selector:
     app: mongo
   ports:

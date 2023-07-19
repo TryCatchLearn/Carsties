@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbit-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: rabbitmq
+  ports:
+  - port: 15672
+    targetPort: 15672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: webapp
+  ports:
+  - port: 3000
+    targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017

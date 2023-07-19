@@ -475,3 +475,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+infra/prod-k8s/prod-secrets.yml
+infra/prod-k8s/le-issuer-staging.yml

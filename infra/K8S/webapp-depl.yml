@@ -14,12 +14,20 @@ spec:
       containers:
       - name: webapp
         image: trycatchlearn/web-app
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         env:
           - name: NEXTAUTH_SECRET
-            value: somethingreallyreallysecret
+            valueFrom:
+              secretKeyRef:
+                name: webapp-secret
+                key: authSecret
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: webapp-secret
+                key: clientSecret
           - name: NEXTAUTH_URL
-            value: https://app.carsties.com
+            value: https://app.carsties.store
           - name: API_URL
             value: http://gateway-clusterip/
           - name: ID_URL
@@ -33,18 +41,6 @@ metadata:
   name: webapp-clusterip
 spec:
   type: ClusterIP
-  selector:
-    app: webapp
-  ports:
-  - port: 3000
-    targetPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webapp-lb
-spec:
-  type: LoadBalancer
   selector:
     app: webapp
   ports:
