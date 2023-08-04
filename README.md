@@ -2,7 +2,7 @@
 
 This is the repository for the Microservices 'Carsties' app created for the Udemy course released in July 2023.
 
-You can view a demo of this app [here](https://app2.carsties.store).   You can register a user and sign in to see it in action or you can use one of the test accounts with the username 'bob' or 'alice' with the password of 'Pass123$' to sign in.
+You can view a demo of this app [here](https://app.carsties.store).   You can register a user and sign in to see it in action or you can use one of the test accounts with the username 'bob' or 'alice' with the password of 'Pass123$' to sign in.
 
 You can see how this app was made by checking out the Udemy course for this [here](https://www.udemy.com/course/build-a-microservices-app-with-dotnet-and-nextjs-from-scratch/?couponCode=NEWCOURSEPROM) (with discount)
 
