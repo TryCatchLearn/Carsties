@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService", "src\Gatew
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidService", "src\BidService\BidService.csproj", "{A2558A20-F521-49E6-90D2-2ABD83157F7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "src\NotificationService\NotificationService.csproj", "{D0711653-C372-425F-9105-36ED2322CA93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,7 @@ Global
 		{9F8A0A4D-0E1F-4F74-955E-7D64279E7038} = {73DD4F46-D43B-4193-AF82-ADB7808D073C}
 		{DB7B9FD1-0EA3-4980-AB0F-9108E52DD30C} = {73DD4F46-D43B-4193-AF82-ADB7808D073C}
 		{A2558A20-F521-49E6-90D2-2ABD83157F7D} = {73DD4F46-D43B-4193-AF82-ADB7808D073C}
+		{D0711653-C372-425F-9105-36ED2322CA93} = {73DD4F46-D43B-4193-AF82-ADB7808D073C}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{28AE57AD-6D87-43B7-8070-3AAC352C8652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -57,5 +60,9 @@ Global
 		{A2558A20-F521-49E6-90D2-2ABD83157F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2558A20-F521-49E6-90D2-2ABD83157F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2558A20-F521-49E6-90D2-2ABD83157F7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0711653-C372-425F-9105-36ED2322CA93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0711653-C372-425F-9105-36ED2322CA93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0711653-C372-425F-9105-36ED2322CA93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0711653-C372-425F-9105-36ED2322CA93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

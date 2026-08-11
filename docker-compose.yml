@@ -128,6 +128,22 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+  notify-svc:
+    image: trycatchlearn/notify-svc:latest
+    build:
+      context: .
+      dockerfile: src/NotificationService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMQ__Host=rabbitmq
+    ports:
+      - "7004:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 volumes:
   postgres_data:
   meilisearch_data:
