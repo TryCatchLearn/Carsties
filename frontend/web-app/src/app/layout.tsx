@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import NavBar from "@/components/nav/NavBar";
 import {Toaster} from "@/components/ui/toast";
+import SignalRProvider from "@/contexts/SignalRContext";
+import LiveNotifications from "@/contexts/LiveNotifications";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -16,11 +18,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("font-sans", inter.variable)}>
       <body className='bg-muted min-h-screen flex flex-col'>
-      <NavBar />
-      <main className="container mx-auto mt-8 flex flex-1 flex-col">
-          {children}
-      </main>
-      <Toaster />
+      <SignalRProvider>
+          <NavBar />
+          <main className="container mx-auto mt-8 flex flex-1 flex-col">
+              {children}
+          </main>
+          <Toaster />
+          <LiveNotifications />
+      </SignalRProvider>
       </body>
     </html>
   );

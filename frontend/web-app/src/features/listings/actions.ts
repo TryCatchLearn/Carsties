@@ -1,10 +1,9 @@
 'use server'
 
-import {Auction, PagedResult} from "@/lib/types";
+import {Auction, Bid, PagedResult} from "@/lib/types";
 import {FieldValues} from "react-hook-form";
-import {auth} from "@/lib/auth";
-import {headers} from "next/headers";
 import {fetchWrapper} from "@/lib/fetch-wrapper";
+import {revalidatePath} from "next/cache";
 
 export type ListingSearchParams = {
     pageNumber?: string | string[];
@@ -15,8 +14,6 @@ export type ListingSearchParams = {
     seller?: string;
     winner?: string;
 }
-
-const baseUrl = process.env.BASE_API_URL || 'http://localhost:6001';
 
 export async function getListings(params: ListingSearchParams = {}) {
     const { pageNumber, pageSize, searchTerm, orderBy, filterBy, seller, winner } = params;
@@ -59,3 +56,20 @@ export async function deleteListing(id: string) {
         method: 'DELETE',
     })
 }
+
+export async function getBidsForListing(id: string) {
+    return fetchWrapper<Bid[]>(`/bids/${id}`, {
+        method: 'GET'
+    })
+}
+
+export async function placeBidForAuction(id: string, amount: number) {
+    const result = await fetchWrapper<Bid>(`/bids?auctionId=${id}&amount=${amount}`, {
+        method: 'POST',
+        body: JSON.stringify({})
+    });
+    
+    revalidatePath(`/listings/${id}`);
+    
+    return result;
+} 

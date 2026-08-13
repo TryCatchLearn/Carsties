@@ -1,5 +1,6 @@
 import {auth} from "@/lib/auth";
 import {headers} from "next/headers";
+import {getSessionCookie} from "better-auth/cookies";
 
 export type FetchResult<T> = {ok: true; data: T} 
     | {ok: false; status: number; error: string}
@@ -8,6 +9,10 @@ const baseUrl = process.env.BASE_API_URL;
 
 async function getAuthHeaders(): Promise<HeadersInit> {
     try {
+        const reqHeaders = await headers();
+        
+        if (!getSessionCookie(reqHeaders)) return {};
+        
         const {accessToken} = await auth.api.getAccessToken({
             body: {providerId: 'duende'},
             headers: await headers()

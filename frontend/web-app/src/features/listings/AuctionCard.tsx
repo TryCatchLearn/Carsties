@@ -5,6 +5,7 @@ import CarImage from "@/features/listings/CarImage";
 import {Auction} from "@/lib/types";
 import {Badge} from "@/components/ui/badge";
 import {User} from "lucide-react";
+import CurrentHighBidBadge from "@/features/listings/CurrentHighBidBadge";
 
 type Props = {
     auction: Auction;
@@ -22,6 +23,13 @@ export default function AuctionCard({ auction }: Props) {
                 </Badge>
                 <div className='absolute bottom-18 left-2'>
                     <CountdownTimer auctionEnd={auction.auctionEnd} />
+                </div>
+                <div className='absolute top-2 left-2'>
+                    <CurrentHighBidBadge 
+                        reservePrice={auction.reservePrice} 
+                        amount={auction.currentHighBid}
+                        auctionId={auction.id}
+                    />
                 </div>
                 <CardContent className='flex justify-between items-center'>
                     <h3 className='text-muted-foreground'>
