@@ -90,8 +90,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;User Id=postgres;Password=postgrespw;Database=identity
-      - IdentityServer__IssuerUri=http://localhost:5001
-      - ClientAppUrl=http://localhost:3000
+      - IdentityServer__IssuerUri=https://id.carsties.test
+      - ClientAppUrl=https://app.carsties.test
+      - VIRTUAL_HOST=id.carsties.test
     ports:
       - "5001:80"
     volumes:
@@ -107,6 +108,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
+      - VIRTUAL_HOST=api.carsties.test
     ports:
       - "6001:80"
   bid-svc:
@@ -144,6 +146,30 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+  web-app:
+    image: trycatchlearn/web-app
+    build:
+      context: ./frontend/web-app
+      dockerfile: Dockerfile
+    volumes: 
+      - /var/lib/web/data
+    ports:
+      - "3000:3000"
+    environment:
+      - BETTER_AUTH_SECRET=SDDEu2FOdENiwBLuB62fFeejzFPUkKF8
+      - BETTER_AUTH_URL=https://app.carsties.test
+      - BASE_API_URL=http://gateway-svc
+      - ID_URL_INTERNAL=http://identity-svc
+      - VIRTUAL_HOST=app.carsties.test
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./local-deploy/proxy-buffers.conf:/etc/nginx/conf.d/proxy-buffers.conf:ro
+      - ./local-deploy/dev-certs:/etc/nginx/certs
 volumes:
   postgres_data:
   meilisearch_data:

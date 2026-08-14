@@ -5,6 +5,7 @@ import LoginButton from "@/components/nav/LoginButton";
 import {getCurrentUser} from "@/lib/auth";
 import {UserMenu} from "@/components/nav/UserMenu";
 import {buttonVariants} from "@/components/ui/button";
+import {Suspense} from "react";
 
 export default async function NavBar() {
     const user = await getCurrentUser();
@@ -15,7 +16,9 @@ export default async function NavBar() {
                 <CarFront size={50}/>
                 <div>Carsties Auctions</div>
             </Link>
-            <SearchInput/>
+            <Suspense>
+                <SearchInput/>
+            </Suspense>
             {user ? (
                 <UserMenu user={user}/>
             ) : (

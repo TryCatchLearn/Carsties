@@ -20,7 +20,7 @@ export default function BidItem({ bid }: Props) {
                     <User className='h-5 w-5' />
                     {bid.bidder}
                 </div>
-                <p className='text-sm text-muted-foreground'>
+                <p suppressHydrationWarning className='text-sm text-muted-foreground'>
                     {formatDateTime(bid.bidTime)}
                 </p>
             </div>

@@ -480,3 +480,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+local-deploy/dev-certs

@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(builder.Configuration["ClientApp"]!);
     });
 });
-
+ 
 var app = builder.Build();
 
 app.UseCors("customPolicy");
