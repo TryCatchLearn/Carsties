@@ -17,6 +17,7 @@ public class BidPlacedHandler
             auction.CurrentHighBid = message.Amount;
         }
         
-        await client.Index("items").UpdateDocumentsAsync([auction]);
+        var updateTask = await client.Index("items").UpdateDocumentsAsync([auction]);
+        await client.WaitForTaskAsync(updateTask.TaskUid);
     }
 }

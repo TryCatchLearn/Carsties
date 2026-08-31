@@ -84,16 +84,19 @@ catch (Exception e)
     Console.WriteLine($"Failed to seed search:  {e.Message}");
 }
 
-_ = Task.Run(async () =>
+if (!app.Environment.IsEnvironment("Test"))
 {
-    try
+    _ = Task.Run(async () =>
     {
-        await DbInitializer.FetchMissingAuctions(app);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Failed to seed search: {e.Message}");
-    }
-});
+        try
+        {
+            await DbInitializer.FetchMissingAuctions(app);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Failed to seed search: {e.Message}");
+        }
+    });
+}
 
 app.Run();
