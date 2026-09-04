@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: meilisearch-data
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 200Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meilisearch
+  labels:
+    app: meilisearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meilisearch
+  template:
+    metadata:
+      name: meilisearch
+      labels:
+        app: meilisearch
+    spec:
+      containers:
+        - name: meilisearch
+          image: getmeili/meilisearch:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 7700
+              protocol: TCP
+          env:
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: meilisearch-master-key
+                  name: carsties-secrets
+          volumeMounts:
+            - mountPath: /meili_data
+              name: data
+          readinessProbe:
+            httpGet:
+              port: 7700
+              path: /health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              port: 7700
+              path: /health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: meilisearch-data
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: meilisearch
+spec:
+  selector:
+    app: meilisearch
+  ports:
+    - protocol: TCP
+      port: 7700
+      targetPort: 7700
+  type: ClusterIP
+    
+      

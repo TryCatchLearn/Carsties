@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: identity-keys
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 10Mi
+---  
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-svc
+  labels:
+    app: identity-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-svc
+  template:
+    metadata:
+      name: identity-svc
+      labels:
+        app: identity-svc
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox
+          command: [ "sh", "-c", "until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done" ]
+      containers:
+        - name: identity-svc
+          image: trycatchlearn/identity-svc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-password
+                  name: carsties-secrets
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+            - name: ConnectionStrings__DefaultConnection
+              value: Server=postgres:5432;User Id=postgres;Password=$(POSTGRES_PASSWORD);Database=identity
+            - name: IdentityServer__IssuerUri
+              value: https://id.carsties.test
+            - name: ClientAppUrl
+              value: https://app.carsties.test
+          volumeMounts:
+            - mountPath: /app/keys
+              name: keys
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+      volumes:
+        - name: keys
+          persistentVolumeClaim:
+            claimName: identity-keys
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-svc
+spec:
+  selector:
+    app: identity-svc
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

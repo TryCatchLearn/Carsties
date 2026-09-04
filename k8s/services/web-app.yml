@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  labels:
+    app: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      name: web-app
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: web-app
+          image: trycatchlearn/web-app
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: BETTER_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: better-auth-secret
+                  name: carsties-secrets
+            - name: BETTER_AUTH_URL
+              value: https://app.carsties.test
+            - name: BASE_API_URL
+              value: http://gateway-svc
+            - name: ID_URL_INTERNAL
+              value: http://identity-svc
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app
+spec:
+  selector:
+    app: web-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+  

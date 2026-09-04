@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-svc
+  labels:
+    app: search-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: search-svc
+  template:
+    metadata:
+      name: search-svc
+      labels:
+        app: search-svc
+    spec:
+      initContainers:
+        - name: wait-for-meilisearch
+          image: busybox
+          command: [ "sh", "-c", "until wget -q -O- http://meilisearch:7700/health; do echo waiting for meilisearch; sleep 2; done" ]
+        - name: wait-for-rabbitmw
+          image: busybox
+          command: [ "sh", "-c", "until nc -z rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done" ]
+      containers:
+        - name: search-svc
+          image: trycatchlearn/search-svc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+            - name: RabbitMQ__Host
+              value: rabbitmq
+            - name: RabbitMQ__Username
+              valueFrom:
+                secretKeyRef:
+                  key: rabbitmq-user
+                  name: carsties-secrets
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  key: rabbitmq-password
+                  name: carsties-secrets
+            - name: Meilisearch__Url
+              value: http://meilisearch:7700
+            - name: Meilisearch__ApiKey
+              valueFrom:
+                secretKeyRef:
+                  key: meilisearch-master-key
+                  name: carsties-secrets
+            - name: AuctionSvcUrl
+              value: http://auction-svc
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-svc
+spec:
+  selector:
+    app: search-svc
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+  

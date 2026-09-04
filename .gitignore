@@ -481,4 +481,5 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-local-deploy/dev-certs
+*/dev-certs
+k8s/config/app-secrets.yml

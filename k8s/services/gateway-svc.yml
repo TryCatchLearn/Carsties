@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-svc
+  labels:
+    app: gateway-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-svc
+  template:
+    metadata:
+      name: gateway-svc
+      labels:
+        app: gateway-svc
+    spec:
+      containers:
+        - name: gateway-svc
+          image: trycatchlearn/gateway-svc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Docker
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-svc
+spec:
+  selector:
+    app: gateway-svc
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+  

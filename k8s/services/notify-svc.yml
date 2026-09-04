@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify-svc
+  labels:
+    app: notify-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notify-svc
+  template:
+    metadata:
+      name: notify-svc
+      labels:
+        app: notify-svc
+    spec:
+      initContainers:
+        - name: wait-for-rabbitmq
+          image: busybox
+          command: [ "sh", "-c", "until nc -z rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done" ]
+      containers:
+        - name: notify-svc
+          image: trycatchlearn/notify-svc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+            - name: RabbitMQ__Host
+              value: rabbitmq
+            - name: RabbitMQ__Username
+              valueFrom:
+                secretKeyRef:
+                  key: rabbitmq-user
+                  name: carsties-secrets
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  key: rabbitmq-password
+                  name: carsties-secrets
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notify-svc
+spec:
+  selector:
+    app: notify-svc
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+  

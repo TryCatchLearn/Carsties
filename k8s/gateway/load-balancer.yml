@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-controller
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      name: traefik
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-controller
+      containers:
+        - name: traefik
+          image: traefik:v3.7
+          imagePullPolicy: IfNotPresent
+          args:
+            - --providers.kubernetesgateway
+            - --entrypoints.web.address=:80
+            - --entrypoints.websecure.address=:443
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+spec:
+  selector:
+    app: traefik
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: web
+    - port: 443
+      targetPort: 443
+      name: websecure
+  type: LoadBalancer
