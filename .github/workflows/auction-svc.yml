@@ -1,0 +1,27 @@
+name: AuctionService
+
+on:
+  workflow_dispatch:
+#  push trigger disabled following end of course
+#  push:
+#    branches: [main]
+#    paths:
+#      - "src/AuctionService/**"
+#      - "src/Contracts/**"
+#      - "tests/AuctionService.Tests/**"
+#      - "k8s/services/auction-svc.yml"
+#      - ".github/workflows/auction-svc.yml"
+#      - ".github/workflows/deploy.yml"
+
+concurrency: 
+  group: auction-svc-${{github.ref}}
+  cancel-in-progress: true
+  
+jobs: 
+  build:
+    uses: ./.github/workflows/deploy.yml
+    with: 
+      image: auction-svc
+      dockerfile: src/AuctionService/Dockerfile
+      test_project: tests/AuctionService.Tests/AuctionService.Tests.csproj
+    secrets: inherit

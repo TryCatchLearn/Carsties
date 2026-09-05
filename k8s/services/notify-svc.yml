@@ -15,13 +15,15 @@ spec:
       labels:
         app: notify-svc
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       initContainers:
         - name: wait-for-rabbitmq
           image: busybox
           command: [ "sh", "-c", "until nc -z rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done" ]
       containers:
         - name: notify-svc
-          image: trycatchlearn/notify-svc:latest
+          image: ghcr.io/trycatchlearn/carsties/notify-svc:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

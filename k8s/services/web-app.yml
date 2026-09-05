@@ -15,9 +15,11 @@ spec:
       labels:
         app: web-app
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       containers:
         - name: web-app
-          image: trycatchlearn/web-app
+          image: ghcr.io/trycatchlearn/carsties/web-app:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

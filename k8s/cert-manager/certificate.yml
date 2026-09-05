@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: carsties-tls
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  secretName: carsties-tls
+  dnsNames:
+    - id.146.190.200.142.nip.io
+    - api.146.190.200.142.nip.io
+    - app.146.190.200.142.nip.io

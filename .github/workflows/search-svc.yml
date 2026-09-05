@@ -1,0 +1,27 @@
+name: SearchService
+
+on:
+  workflow_dispatch:
+#  push trigger disabled following end of course
+#  push:
+#    branches: [main]
+#    paths:
+#      - "src/SearchService/**"
+#      - "src/Contracts/**"
+#      - "k8s/services/search-svc.yml"
+#      - "tests/SearchService.Tests/**"
+#      - ".github/workflows/search-svc.yml"
+#      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: search-svc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      image: search-svc
+      dockerfile: src/SearchService/Dockerfile
+      test_project: tests/SearchService.Tests/SearchService.Tests.csproj
+    secrets: inherit

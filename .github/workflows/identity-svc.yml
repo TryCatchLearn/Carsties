@@ -1,0 +1,24 @@
+name: IdentityService
+
+on:
+  workflow_dispatch:
+#  push trigger disabled following end of course
+#  push:
+#    branches: [main]
+#    paths:
+#      - "src/IdentityService/**"
+#      - "k8s/services/identity-svc.yml"
+#      - ".github/workflows/identity-svc.yml"
+#      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: identity-svc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      image: identity-svc
+      dockerfile: src/IdentityService/Dockerfile
+    secrets: inherit

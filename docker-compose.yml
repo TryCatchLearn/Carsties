@@ -42,7 +42,7 @@ services:
       timeout: 5s
       retries: 5
   auction-svc:
-    image: trycatchlearn/auction-svc:latest
+    image: ghcr.io/trycatchlearn/carsties/auction-svc:latest
     build:
       context: .
       dockerfile: src/AuctionService/Dockerfile
@@ -63,7 +63,7 @@ services:
       rabbitmq:
         condition: service_healthy
   search-svc:
-    image: trycatchlearn/search-svc:latest
+    image: ghcr.io/trycatchlearn/carsties/search-svc:latest
     build:
       context: .
       dockerfile: src/SearchService/Dockerfile
@@ -82,7 +82,7 @@ services:
       rabbitmq:
         condition: service_healthy
   identity-svc:
-    image: trycatchlearn/identity-svc:latest
+    image: ghcr.io/trycatchlearn/carsties/identity-svc:latest
     build:
       context: .
       dockerfile: src/IdentityService/Dockerfile
@@ -101,7 +101,7 @@ services:
       postgres:
         condition: service_healthy
   gateway-svc:
-    image: trycatchlearn/gateway-svc:latest
+    image: ghcr.io/trycatchlearn/carsties/gateway-svc:latest
     build:
       context: .
       dockerfile: src/GatewayService/Dockerfile
@@ -112,7 +112,7 @@ services:
     ports:
       - "6001:80"
   bid-svc:
-    image: trycatchlearn/bid-svc:latest
+    image: ghcr.io/trycatchlearn/carsties/bid-svc:latest
     build:
       context: .
       dockerfile: src/BidService/Dockerfile
@@ -131,7 +131,7 @@ services:
       rabbitmq:
         condition: service_healthy
   notify-svc:
-    image: trycatchlearn/notify-svc:latest
+    image: ghcr.io/trycatchlearn/carsties/notify-svc:latest
     build:
       context: .
       dockerfile: src/NotificationService/Dockerfile
@@ -147,7 +147,7 @@ services:
       rabbitmq:
         condition: service_healthy
   web-app:
-    image: trycatchlearn/web-app
+    image: ghcr.io/trycatchlearn/carsties/web-app:latest
     build:
       context: ./frontend/web-app
       dockerfile: Dockerfile

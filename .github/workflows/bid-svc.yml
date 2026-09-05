@@ -1,0 +1,25 @@
+name: BidService
+
+on:
+  workflow_dispatch:
+#  push trigger disabled following end of course
+#  push:
+#    branches: [main]
+#    paths:
+#      - "src/BidService/**"
+#      - "src/Contracts/**"
+#      - "k8s/services/bid-svc.yml"
+#      - ".github/workflows/bid-svc.yml"
+#      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: bid-svc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      image: bid-svc
+      dockerfile: src/BidService/Dockerfile
+    secrets: inherit

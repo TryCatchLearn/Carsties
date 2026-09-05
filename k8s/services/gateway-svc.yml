@@ -15,9 +15,11 @@ spec:
       labels:
         app: gateway-svc
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       containers:
         - name: gateway-svc
-          image: trycatchlearn/gateway-svc:latest
+          image: ghcr.io/trycatchlearn/carsties/gateway-svc:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

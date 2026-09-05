@@ -1,0 +1,24 @@
+name: GatewayService
+
+on:
+  workflow_dispatch:
+#  push trigger disabled following end of course
+#  push:
+#    branches: [main]
+#    paths:
+#      - "src/GatewayService/**"
+#      - "k8s/services/gateway-svc.yml"
+#      - ".github/workflows/gateway-svc.yml"
+#      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: gateway-svc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      image: gateway-svc
+      dockerfile: src/GatewayService/Dockerfile
+    secrets: inherit

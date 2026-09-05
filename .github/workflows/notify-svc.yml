@@ -1,0 +1,25 @@
+name: NotificationService
+
+on:
+  workflow_dispatch:
+#  push trigger disabled following end of course
+#  push:
+#    branches: [main]
+#    paths:
+#      - "src/NotificationService/**"
+#      - "src/Contracts/**"
+#      - "k8s/services/notify-svc.yml"
+#      - ".github/workflows/notify-svc.yml"
+#      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: notify-svc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      image: notify-svc
+      dockerfile: src/NotificationService/Dockerfile
+    secrets: inherit
